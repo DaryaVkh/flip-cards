@@ -1,5 +1,9 @@
-<div class="item">
-  <div class="item-content" [class]="{'item_front': isFront, 'item_back': !isFront}">
+<div class="item" [class.flipped]="isFlipped">
+  <div class="item-content item_front">
+    <div class="close" (click)="deleteCard()"></div>
+    <div class="name">{{card.title}}</div>
+  </div>
+  <div class="item-content item_back">
     <div class="close"></div>
     <div class="name">{{card.title}}</div>
     <div class="description">

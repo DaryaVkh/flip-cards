@@ -1,21 +1,27 @@
 .item {
   width: 360px;
   height: 200px;
-  padding: 10px;
   box-sizing: border-box;
-  transition: transform 0.8s;
   transform-style: preserve-3d;
+  transform-origin: center right;
+  transition: transform 1s;
 }
 
 .item-content {
-  position: relative;
-  height: 100%;
   padding: 30px 30px 10px;
   box-sizing: border-box;
   border: 1px solid #cbcfd3;
   border-radius: 4px;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.flipped {
+  transform: translateX(-100%) rotateY(-180deg);
 }
 
 .close {
@@ -69,6 +75,10 @@
   justify-content: center;
 }
 
+.item_back {
+  transform: rotateY(180deg);
+}
+
 .item_back .name {
   margin: -20px 0 10px -20px;
   font-size: 13px;
@@ -82,8 +92,4 @@
   height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-}
-
-.item_front .description {
-  visibility: hidden;
 }

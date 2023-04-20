@@ -1,14 +1,16 @@
-<form class="form" [formGroup]="form">
+<form class="form" [formGroup]="form" (submit)="submit($event)">
   <div class="form-title">Добавить карточку</div>
   <div class="form-content">
     <div class="row">
       <input type="text" placeholder="Название" aria-label="Название" formControlName="title">
+      <small *ngIf="titleError" class="error">{{titleError}}</small>
     </div>
     <div class="row">
       <textarea placeholder="Описание" aria-label="Описание" formControlName="description"></textarea>
+      <small *ngIf="descriptionError" class="error">{{descriptionError}}</small>
     </div>
     <div class="row row_submit">
-      <button type="submit" class="button" value="Добавить карточку"></button>
+      <input type="submit" class="button" value="Добавить карточку">
     </div>
   </div>
 </form>

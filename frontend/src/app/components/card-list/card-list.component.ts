@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { CardApiService } from '../../services/card-api.service';
 import { CardDto } from '../card/card.models';
 
@@ -12,11 +12,43 @@ import { CardDto } from '../card/card.models';
 export class CardListComponent {
   readonly cards$: Observable<CardDto[]>;
 
-  openedCardId: number | null = null;
+  public openedCardId: number | null = null;
+  public disabledCardIdForClick: number | null = null;
+
+  private readonly update$ = new Subject<void>();
 
   constructor(private readonly cardApiService: CardApiService) {
-    this.cards$ = cardApiService.getCardList().pipe(
+    this.cards$ = this.update$.pipe(
+      startWith(0),
+      switchMap(() => cardApiService.getCardList()),
       shareReplay({bufferSize: 1, refCount: true})
     );
+  }
+
+  public toggleCard(cardId: number): void {
+    if (this.disabledCardIdForClick === cardId) {
+      return;
+    }
+
+    this.disabledCardIdForClick = cardId;
+    if (this.openedCardId === cardId) {
+      this.openedCardId = null;
+    } else {
+      this.openedCardId = cardId;
+    }
+
+    setTimeout(() => {
+      if (this.disabledCardIdForClick === cardId) {
+        this.disabledCardIdForClick = null;
+      }
+    }, 1000);
+  }
+
+  public update(): void {
+    this.update$.next();
+  }
+
+  public deleteCard(): void {
+    this.update();
   }
 }

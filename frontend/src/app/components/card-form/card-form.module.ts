@@ -8,6 +8,9 @@ import { CardFormComponent } from './card-form.component';
   declarations: [
     CardFormComponent
   ],
+  exports: [
+    CardFormComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule

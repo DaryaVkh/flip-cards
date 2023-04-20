@@ -9,7 +9,11 @@
 .cards-container {
   display: flex;
   flex-wrap: wrap;
-  width: 80%;
+  width: 95%;
   align-self: center;
-  gap: 40px;
+  gap: 30px;
+}
+
+.card {
+  cursor: pointer;
 }

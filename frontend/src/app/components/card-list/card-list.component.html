@@ -1,3 +1,9 @@
+<app-card-form (added)="update()"></app-card-form>
+
 <div class="cards-container">
-  <app-card *ngFor="let card of cards$ | async" [card]="card" [isFront]="card.id === openedCardId"></app-card>
+  <app-card *ngFor="let card of cards$ | async" [card]="card"
+            class="card"
+            [isFlipped]="card.id === openedCardId"
+            (click)="toggleCard(card.id)" (deleted)="deleteCard()">
+  </app-card>
 </div>
