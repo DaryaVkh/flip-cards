@@ -1,8 +1,8 @@
 @import '~@taiga-ui/core/styles/taiga-ui-local';
 
 :host {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   padding: 20px;
 }

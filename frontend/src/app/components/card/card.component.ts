@@ -10,10 +10,10 @@ import { CardDto } from './card.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardComponent implements OnDestroy {
-  @Input() card!: CardDto;
-  @Input() isFlipped = true;
+  @Input() public card!: CardDto;
+  @Input() public isFlipped = true;
 
-  @Output() deleted = new EventEmitter<void>();
+  @Output() public deleted = new EventEmitter<void>();
 
   private readonly destroy$ = new Subject<void>();
 

@@ -10,7 +10,7 @@ import { CardDto } from '../card/card.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardListComponent {
-  readonly cards$: Observable<CardDto[]>;
+  public readonly cards$: Observable<CardDto[]>;
 
   public openedCardId: number | null = null;
   public disabledCardIdForClick: number | null = null;
