@@ -1,9 +1,12 @@
 <app-card-form (added)="update()"></app-card-form>
 
+<button class="flip-cards-button" (click)="flipAllCards()">Перевернуть все карты</button>
+
 <div class="cards-container">
   <app-card *ngFor="let card of cards$ | async" [card]="card"
             class="card"
-            [isFlipped]="card.id === openedCardId"
-            (click)="toggleCard(card.id)" (deleted)="deleteCard()">
+            [isFlipped]="isFlipped(card.id)"
+            (click)="toggleCard(card.id)"
+            (deleted)="deleteCard()">
   </app-card>
 </div>

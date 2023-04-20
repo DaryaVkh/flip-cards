@@ -43,10 +43,10 @@ input.button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
 
-input.button:hover {
-  opacity: .8;
+  &:hover {
+    opacity: .8;
+  }
 }
 
 .error {
