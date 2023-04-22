@@ -11,22 +11,20 @@ import { CardDto } from '../card/card.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardListComponent {
-  public readonly cards$: Observable<CardDto[]>;
+  private readonly update$ = new Subject<void>();
+
+  public readonly cards$: Observable<CardDto[]> = this.update$.pipe(
+    startWith(0),
+    switchMap(() => this.cardApiService.getCardList()),
+    shareReplay({bufferSize: 1, refCount: true})
+  );
 
   public readonly flippedCardIds: number[] = this.cardsStateSaver.getFlippedCards();
 
   private readonly disabledCardsForClick: number[] = [];
 
-  private readonly update$ = new Subject<void>();
-
   constructor(private readonly cardApiService: CardApiService,
-              private readonly cardsStateSaver: CardsStateSaverService) {
-    this.cards$ = this.update$.pipe(
-      startWith(0),
-      switchMap(() => cardApiService.getCardList()),
-      shareReplay({bufferSize: 1, refCount: true})
-    );
-  }
+              private readonly cardsStateSaver: CardsStateSaverService) {}
 
   public toggleCard(cardId: number): void {
     if (this.disabledCardsForClick.includes(cardId)) {
