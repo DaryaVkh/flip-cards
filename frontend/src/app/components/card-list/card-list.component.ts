@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { CardApiService } from '../../services/card-api.service';
+import { CardsStateSaverService } from '../../services/cards-state-saver.service';
 import { CardDto } from '../card/card.models';
 
 @Component({
@@ -10,38 +11,46 @@ import { CardDto } from '../card/card.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardListComponent {
-  public readonly cards$: Observable<CardDto[]>;
-
-  public openedCardId: number | null = null;
-  public disabledCardIdForClick: number | null = null;
-
   private readonly update$ = new Subject<void>();
 
-  constructor(private readonly cardApiService: CardApiService) {
-    this.cards$ = this.update$.pipe(
-      startWith(0),
-      switchMap(() => cardApiService.getCardList()),
-      shareReplay({bufferSize: 1, refCount: true})
-    );
-  }
+  public readonly cards$: Observable<CardDto[]> = this.update$.pipe(
+    startWith(0),
+    switchMap(() => this.cardApiService.getCardList()),
+    shareReplay({bufferSize: 1, refCount: true})
+  );
+
+  public readonly flippedCardIds: number[] = this.cardsStateSaver.getFlippedCards();
+
+  private readonly disabledCardsForClick: number[] = [];
+
+  constructor(private readonly cardApiService: CardApiService,
+              private readonly cardsStateSaver: CardsStateSaverService) {}
 
   public toggleCard(cardId: number): void {
-    if (this.disabledCardIdForClick === cardId) {
+    if (this.disabledCardsForClick.includes(cardId)) {
       return;
     }
 
-    this.disabledCardIdForClick = cardId;
-    if (this.openedCardId === cardId) {
-      this.openedCardId = null;
+    this.disabledCardsForClick.push(cardId);
+    const index = this.flippedCardIds.findIndex((id) => id === cardId);
+    if (index !== -1) {
+      this.flippedCardIds.splice(index, 1);
     } else {
-      this.openedCardId = cardId;
+      this.flippedCardIds.push(cardId);
     }
 
+    this.cardsStateSaver.setFlippedCards(this.flippedCardIds);
+
     setTimeout(() => {
-      if (this.disabledCardIdForClick === cardId) {
-        this.disabledCardIdForClick = null;
+      const idx = this.disabledCardsForClick.findIndex((id) => id === cardId);
+      if (idx !== -1) {
+        this.disabledCardsForClick.splice(idx, 1);
       }
     }, 1000);
+  }
+
+  public isFlipped(cardId: number): boolean {
+    return this.flippedCardIds.includes(cardId);
   }
 
   public update(): void {
@@ -50,5 +59,14 @@ export class CardListComponent {
 
   public deleteCard(): void {
     this.update();
+  }
+
+  public flipAllCards(): void {
+    this.disabledCardsForClick.push(...this.flippedCardIds);
+    this.flippedCardIds.splice(0);
+    this.cardsStateSaver.setFlippedCards([]);
+    setTimeout(() => {
+      this.disabledCardsForClick.splice(0);
+    }, 1000);
   }
 }
